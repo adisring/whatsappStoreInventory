@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Whatsapp Inventory Management</title>
+  <style>
+    /* SAP Horizon Inspired Theme Base */
+    body {
+      font-family: "72", "72-Web", Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 32px;
+      background-color: #f5f6f7; /* Quartz light background */
+      color: #1d2d3d;
+    }
+    
+    .sap-shell {
+      max-width: 1150px; /* Expanded slightly to fit the Action column */
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #d9d9d9;
+      border-radius: 8px;
+      box-shadow: 0 0 12px 0 rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    .sap-header {
+      background-color: #1b2a3a; /* Dark Navy */
+      color: #ffffff;
+      padding: 16px 24px;
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+
+    .sap-content {
+      padding: 24px;
+    }
+
+    /* Form Layout */
+    .sap-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+      align-items: flex-end;
+    }
+
+    .sap-form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-size: 0.875rem;
+      color: #6a6d70;
+      margin-bottom: 6px;
+      font-weight: normal;
+    }
+
+    input {
+      height: 36px;
+      padding: 0 12px;
+      box-sizing: border-box;
+      border: 1px solid #89919a;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      background-color: #ffffff;
+      color: #1d2d3d;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #0064d2; /* SAP Accent Blue */
+      box-shadow: 0 0 0 2px rgba(0,100,210,0.2);
+    }
+
+    /* SAP Primary Button Standard */
+    button.sap-btn-primary {
+      height: 36px;
+      background-color: #0064d2;
+      color: #ffffff;
+      padding: 0 20px;
+      border: 1px solid #0064d2;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: background-color 0.1s;
+    }
+
+    button.sap-btn-primary:hover {
+      background-color: #004b9e;
+      border-color: #004b9e;
+    }
+
+    /* SAP Transparent / Reject Button Styling */
+    button.sap-btn-reject {
+      height: 28px;
+      background-color: transparent;
+      color: #bb0000;
+      padding: 0 10px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8125rem;
+      transition: all 0.2s;
+    }
+
+    button.sap-btn-reject:hover {
+      background-color: #ffeef0;
+      border-color: #bb0000;
+    }
+
+    /* SAP Analytical Table Standard */
+    .sap-table-container {
+      margin-top: 32px;
+      border-top: 1px solid #d9d9d9;
+      padding-top: 16px;
+    }
+
+    .sap-table-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 12px;
+      color: #1d2d3d;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+
+    th {
+      background-color: #f5f6f7;
+      color: #6a6d70;
+      font-weight: 600;
+      border-bottom: 2px solid #d9d9d9;
+      padding: 12px;
+      text-align: left;
+    }
+
+    td {
+      border-bottom: 1px solid #e5e5e5;
+      padding: 12px;
+      color: #1d2d3d;
+      vertical-align: middle;
+    }
+
+    tr:hover td {
+      background-color: #f0f2f4;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+    
+    .text-center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sap-shell">
+  <div class="sap-header">Manage Retail Inventory</div>
+  
+  <div class="sap-content">
+    <!-- SAP Responsive Grid Form Layout -->
+    <div class="sap-form-grid">
+      <div class="sap-form-group">
+        <label for="itemName">Item Name</label>
+        <input type="text" id="itemName" placeholder="Name">
+      </div>
+      
+      <div class="sap-form-group">
+        <label for="itemSku">SKU</label>
+        <input type="text" id="itemSku" placeholder="SKU">
+      </div>
+
+      <div class="sap-form-group">
+        <label for="itemWh">Warehouse</label>
+        <input type="text" id="itemWh" placeholder="e.g. WH-01">
+      </div>
+
+      <div class="sap-form-group">
+        <label for="itemLot">Lot Location</label>
+        <input type="text" id="itemLot" placeholder="e.g. A-12">
+      </div>
+      
+      <div class="sap-form-group">
+        <label for="itemQty">Quantity</label>
+        <input type="number" id="itemQty" min="0" placeholder="0">
+      </div>
+
+      <div class="sap-form-group">
+        <label for="itemPrice">Unit Price (INR)</label>
+        <input type="number" id="itemPrice" min="0" step="0.01" placeholder="0.00">
+      </div>
+      
+      <button class="sap-btn-primary" onclick="addItem()">Add Item</button>
+    </div>
+
+    <!-- SAP Dynamic Table Grid -->
+    <div class="sap-table-container">
+      <div class="sap-table-title">Items List</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>SKU</th>
+            <th>Warehouse</th>
+            <th>Lot Location</th>
+            <th class="text-right">Quantity</th>
+            <th class="text-right">Unit Price</th>
+            <th class="text-center" style="width: 100px;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="inventoryBody">
+          <!-- Rows inject here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  function addItem() {
+    // 1. Capture Form Inputs
+    const name = document.getElementById("itemName").value.trim();
+    const sku = document.getElementById("itemSku").value.trim();
+    const wh = document.getElementById("itemWh").value.trim();
+    const lot = document.getElementById("itemLot").value.trim();
+    const qty = document.getElementById("itemQty").value.trim();
+    const price = document.getElementById("itemPrice").value.trim();
+
+    // 2. Validate Fields
+    if (name === "" || sku === "" || wh === "" || lot === "" || qty === "" || price === "") {
+      alert("All fields are mandatory. Please complete the form.");
+      return;
+    }
+
+    // 3. Target Output Container
+    const tableBody = document.getElementById("inventoryBody");
+
+    // 4. Format Numeric Variables
+    const formattedPrice = parseFloat(price).toFixed(2);
+    const formattedQty = parseInt(qty, 10).toLocaleString();
+
+    // 5. Structure DOM Elements Safely
+    // Added a Delete action button that calls removeItem and passes 'this' (the button object)
+    const newRowHTML = `
+      <tr>
+        <td>${escapeHtml(name)}</td>
+        <td>${escapeHtml(sku)}</td>
+        <td>${escapeHtml(wh)}</td>
+        <td>${escapeHtml(lot)}</td>
+        <td class="text-right">${formattedQty}</td>
+        <td class="text-right">₹${formattedPrice}</td>
+        <td class="text-center">
+          <button class="sap-btn-reject" onclick="removeItem(this)">Delete</button>
+        </td>
+      </tr>
+    `;
+
+    // 6. Push Changes via innerHTML
+    tableBody.innerHTML += newRowHTML;
+
+    // 7. Reset Form Fields
+    document.getElementById("itemName").value = "";
+    document.getElementById("itemSku").value = "";
+    document.getElementById("itemWh").value = "";
+    document.getElementById("itemLot").value = "";
+    document.getElementById("itemQty").value = "";
+    document.getElementById("itemPrice").value = "";
+  }
+
+  // Function to remove a row from the list
+  function removeItem(button) {
+    // Navigate up from the button to the td, and then to the containing tr element
+    const row = button.parentElement.parentElement;
+    row.remove();
+  }
+
+  // Safety filter to escape inputs
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+</script>
+
+</body>
+</html>
